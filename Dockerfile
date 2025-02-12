@@ -1,6 +1,6 @@
 FROM eclipse-temurin:21-jre AS base
 
-ARG foo
-ENV foo=${foo}
+ARG FOO
+ENV FOO=${FOO}
 
-CMD [ "echo", "${foo}" ]
+CMD [ "echo", "${FOO}" ]
