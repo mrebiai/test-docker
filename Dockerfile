@@ -1,8 +1,13 @@
-FROM eclipse-temurin:21-jre AS base
+FROM eclipse-temurin:21-jdk AS builder
 
-COPY entrypoint.sh /entrypoint.sh
+COPY lib /lib
+COPY *.gradle.kts ./
+COPY gradle.properties .
+COPY gradlew .
+COPY gradle gradle
+RUN ./gradlew build
 
-ARG FOO
-RUN echo "${FOO}" | base64 -d > /foo.txt
+FROM eclipse-temurin:21-jre AS app
+COPY --from=builder /lib/build/libs/lib.jar /lib.jar
 
-ENTRYPOINT [ "/entrypoint.sh" ]
+CMD ["java", "-cp", "/lib.jar", "org.example.LibraryKt"]
