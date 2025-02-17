@@ -1,0 +1,3 @@
+FROM ghcr.io/mrebiai/test-docker:main
+
+RUN touch /foo.txt
