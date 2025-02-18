@@ -92,6 +92,9 @@ jobs:
           docker container cp temp-container:/lib.jar lib.jar
           docker container rm temp-container
 
+      - name: Set up GitHub CLI
+        uses: cli/cli@latest
+      
       - name: Release
         id: release
         env:
