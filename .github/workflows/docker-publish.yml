@@ -96,12 +96,15 @@ jobs:
         id: release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          tag: 1.0.0
+          tag: v1.0.0
           # ${{ github.ref_name }}
         run: |
-          gh release --help
-
           gh release create "$tag" --title="$tag" --generate-notes lib.jar
+
+          # --latest  
+          # or
+          # --latest=false
+          
 
       # # Sign the resulting Docker image digest except on PRs.
       # # This will only write to the public Rekor transparency log when the Docker
