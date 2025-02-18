@@ -1,4 +1,4 @@
-FROM eclipse-temurin:21-jdk AS builder
+FROM eclipse-temurin:21.0.6_7-jdk AS builder
 
 COPY lib /lib
 COPY *.gradle.kts ./
@@ -7,7 +7,7 @@ COPY gradlew .
 COPY gradle gradle
 RUN ./gradlew build
 
-FROM eclipse-temurin:21-jre AS app
+FROM eclipse-temurin:21.0.6_7-jre AS app
 LABEL org.opencontainers.image.source=https://github.com/mrebiai/test-docker
 LABEL org.opencontainers.image.description="test-docker"
 LABEL org.opencontainers.image.licenses=Apache-2.0
