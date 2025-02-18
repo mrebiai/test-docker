@@ -13,9 +13,6 @@ on:
   pull_request:
     branches: [ "main" ]
 
-permissions:
-  contents: write
-
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
@@ -102,11 +99,7 @@ jobs:
           tag: 1.0.0
           # ${{ github.ref_name }}
         run: |
-          gh release create "$tag" \
-              --repo="$GITHUB_REPOSITORY" \
-              --title="${GITHUB_REPOSITORY#*/} ${tag#v}" \
-              --generate-notes \
-              lib.jar
+          gh release create "$tag" --title="$tag" --generate-notes lib.jar
 
       # # Sign the resulting Docker image digest except on PRs.
       # # This will only write to the public Rekor transparency log when the Docker
