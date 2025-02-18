@@ -99,8 +99,8 @@ jobs:
           tag: v1.0.0
           # ${{ github.ref_name }}
         run: |
-          gh release delete "$tag" --yes
-          gh release create "$tag" --title="$tag" --generate-notes lib.jar
+          output=$(gh release delete "${tag}" --cleanup-tag --yes 2>&1) || [[ "${output}" == "release not found" ]]
+          gh release create "${tag}" --title="${tag}" --generate-notes lib.jar
 
           # --latest  
           # or
