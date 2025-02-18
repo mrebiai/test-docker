@@ -13,6 +13,9 @@ on:
   pull_request:
     branches: [ "main" ]
 
+permissions:
+  contents: write
+
 env:
   # Use docker.io for Docker Hub if empty
   REGISTRY: ghcr.io
