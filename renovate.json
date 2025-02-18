@@ -15,6 +15,7 @@
   ],
   "packageRules": [
     {
+      "description": "Automerge non-major updates",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
       "automergeType": "branch"
