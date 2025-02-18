@@ -99,6 +99,7 @@ jobs:
           tag: v1.0.0
           # ${{ github.ref_name }}
         run: |
+          gh release delete "$tag" --yes
           gh release create "$tag" --title="$tag" --generate-notes lib.jar
 
           # --latest  
