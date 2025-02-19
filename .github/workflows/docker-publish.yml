@@ -107,14 +107,14 @@ jobs:
         id: extract-fat-jar
         run: |
           docker container create --name temp-container ${{ steps.meta-1.outputs.tags }}
-          docker container cp temp-container:/lib.jar lib.jar
+          docker container cp temp-container:/app.jar app.jar
           docker container rm temp-container
       
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
-          name: lib
-          path: lib.jar
+          name: app
+          path: app.jar
 
       # - name: Release
       #   id: release
