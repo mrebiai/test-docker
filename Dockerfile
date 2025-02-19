@@ -10,6 +10,6 @@ RUN ./gradlew build
 
 FROM eclipse-temurin:21.0.6_7-jre AS app
 
-COPY --from=builder /build/libs/app*.jar /app.jar
+COPY --from=builder /build/libs/test-docker*.jar /test-docker.jar
 
-CMD ["java", "-cp", "/app.jar", "org.example.AppKt"]
+CMD ["java", "-cp", "/test-docker.jar", "org.example.AppKt"]

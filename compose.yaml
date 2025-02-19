@@ -1,0 +1,14 @@
+services:
+  minimal:
+    build: 
+      context: .
+      dockerfile: Dockerfile
+      tags:
+        - test-docker:minimal
+  more:
+    build: 
+      context: .
+      dockerfile: Dockerfile_more
+      tags:
+        - test-docker:more
+        
