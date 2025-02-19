@@ -7,11 +7,13 @@
 
 group = "io.github.mrebiai"
 description = "test-docker"
-version = grgitService.service.get().grgit.describe{ tags = true }
+version = grgitService.service.get().grgit.describe{ tags = true }.replace("^v".toRegex(), "")
 
 plugins {
     // Apply the org.jetbrains.kotlin.jvm Plugin to add support for Kotlin.
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.grgit.service)
+
 
     // Apply the application plugin to add support for building a CLI application in Java.
     application
