@@ -51,8 +51,11 @@ jobs:
       #     echo "REGISTRY_USERNAME=${{ github.actor }}" >> "$GITHUB_ENV"
       #     echo "REGISTRY_PASSWORD=${{ secrets.GITHUB_TOKEN }}" >> "$GITHUB_ENV"
       #     echo "IMAGE_NAME=${{ github.repository }}" >> "$GITHUB_ENV"
-  
-      
+
+      - name: build-all
+        run: |
+          docker compose build
+
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
       - name: Install cosign

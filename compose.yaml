@@ -11,4 +11,6 @@ services:
       dockerfile: Dockerfile_more
       tags:
         - test-docker:more
-        
+    depends_on: 
+      - minimal
+      
