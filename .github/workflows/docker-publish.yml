@@ -136,6 +136,9 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           if gh release view "${{ env.TAG_NAME }}" > /dev/null 2>&1; then
+            echo "Release ${{ env.TAG_NAME }} already exists"
+          else
+            echo "Release ${{ env.TAG_NAME }} does not exist"
             gh release create "${{ env.TAG_NAME }}" --title="${{ env.TAG_NAME }}" --generate-notes
           fi
           gh release upload "${{ env.TAG_NAME }}" test-docker-${{ env.VERSION_NUMBER }}.jar --clobber
