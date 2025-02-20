@@ -135,6 +135,14 @@ jobs:
           name: jar
           path: test-docker.jar
 
+
+      - name: Upload jar in release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          output=$(gh release create "${tag}" --title="${tag}" --generate-notes 2>&1) || [[ "${output}" == "release already exists" ]]
+          gh release upload "${tag}" test-docker.jar --clobber
+
       # - name: Release
       #   id: release
       #   env:
