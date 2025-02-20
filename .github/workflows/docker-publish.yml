@@ -113,7 +113,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64 
           #,linux/arm64
-          push: ${{ env.RELEASE_MODE }}
+          push: ${{ env.RELEASE_MODE == 'true' }}
           tags: ${{ steps.meta-1.outputs.tags }}
           labels: ${{ steps.meta-1.outputs.labels }}
           cache-from: type=gha
@@ -179,7 +179,7 @@ jobs:
           file: ./Dockerfile_more
           platforms: linux/amd64 
           #,linux/arm64
-          push: ${{ env.RELEASE_MODE }}
+          push: ${{ env.RELEASE_MODE == 'true' }}
           tags: ${{ steps.meta-2.outputs.tags }}
           labels: ${{ steps.meta-2.outputs.labels }}
           cache-from: type=gha
