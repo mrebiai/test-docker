@@ -177,7 +177,6 @@ jobs:
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
         with:
           context: .
-          load: true
           file: ./Dockerfile_more
           platforms: linux/amd64 
           #,linux/arm64
