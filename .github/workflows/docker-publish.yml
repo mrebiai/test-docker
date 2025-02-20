@@ -52,17 +52,13 @@ jobs:
       #     echo "REGISTRY_PASSWORD=${{ secrets.GITHUB_TOKEN }}" >> "$GITHUB_ENV"
       #     echo "IMAGE_NAME=${{ github.repository }}" >> "$GITHUB_ENV"
 
-      - name: build-all
-        run: |
-          docker compose build
-
-      # Install the cosign tool except on PR
-      # https://github.com/sigstore/cosign-installer
-      - name: Install cosign
-        if: ${{ contains(github.ref, 'refs/tags/') && github.repository == env.ORIGIN_REPOSITORY }}
-        uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e # v3.8.0
-        with:
-          cosign-release: 'v2.4.2'
+      # # Install the cosign tool except on PR
+      # # https://github.com/sigstore/cosign-installer
+      # - name: Install cosign
+      #   if: ${{ contains(github.ref, 'refs/tags/') && github.repository == env.ORIGIN_REPOSITORY }}
+      #   uses: sigstore/cosign-installer@c56c2d3e59e4281cc41dea2217323ba5694b171e # v3.8.0
+      #   with:
+      #     cosign-release: 'v2.4.2'
 
       # Set up BuildKit Docker container builder to be able to build
       # multi-platform images and export cache
@@ -94,8 +90,8 @@ jobs:
         id: build-and-push-1
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
         with:
-          load: true
           context: .
+          load: true
           file: ./Dockerfile
           platforms: linux/amd64 
           #,linux/arm64
@@ -110,7 +106,7 @@ jobs:
       - name: Extract fat jar
         id: extract-fat-jar
         run: |
-          docker container create --name temp-container ${{ steps.meta-1.outputs.tags }}
+          docker container create --name temp-container test-docker:minimal
           docker container cp temp-container:/test-docker.jar test-docker.jar
           docker container rm temp-container
       

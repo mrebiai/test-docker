@@ -1,22 +1,16 @@
 services:
   minimal:
-    build: 
+    build:
       context: .
       dockerfile: Dockerfile
-      cache_from: 
-        - type=gha
-      cache_to: 
-        - type=gha,mode=max
       tags:
         - test-docker:minimal
   more:
     build: 
       context: .
       dockerfile: Dockerfile_more
-      cache_from: 
-        - type=gha
-      cache_to: 
-        - type=gha,mode=max
+      args:
+        - BASE_IMAGE=test-docker:minimal
       tags:
         - test-docker:more
     depends_on: 
