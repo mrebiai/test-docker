@@ -1,4 +1,6 @@
 ARG BASE_IMAGE
 FROM ${BASE_IMAGE}
+ARG BUILD_VERSION="unspecified"
+LABEL org.opencontainers.image.version="${BUILD_VERSION}"
 
 RUN touch /foo.txt
