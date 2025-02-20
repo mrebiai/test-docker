@@ -118,9 +118,7 @@ jobs:
           labels: ${{ steps.meta-1.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-             BUILD_VERSION=${{ env.VERSION_NUMBER }}-minimal
-
+          
       - name: Extract fat jar
         id: extract-fat-jar
         if: ${{ env.RELEASE_MODE == 'true' }}
@@ -185,9 +183,8 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
           build-args: |
-            BASE_IMAGE=${{ steps.meta-1.outputs.tags }}
-            BUILD_VERSION=${{ env.VERSION_NUMBER }}-more
-
+            BASE_IMAGE=${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ steps.meta-1.outputs.tags }}
+            
       # Sign the resulting Docker image digest except on PRs.
       # This will only write to the public Rekor transparency log when the Docker
       # repository is public to avoid leaking data.  If you would like to publish
