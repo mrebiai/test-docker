@@ -45,6 +45,18 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Extract tag name
+        if: ${{ contains(github.ref, 'refs/tags/') && github.repository == env.ORIGIN_REPOSITORY }}
+        run: |
+          TAG=${GITHUB_REF#refs/tags/}
+          echo "Tag name is: $TAG"
+          echo "TAG_NAME=$TAG" >> $GITHUB_ENV
+
+      - name: Use the tag name
+        if: ${{ contains(github.ref, 'refs/tags/') && github.repository == env.ORIGIN_REPOSITORY }}
+        run: |
+          echo "The tag name extracted is: ${{ env.TAG_NAME }}"
+
       # TODO when using Dockerhub
       # - name: Detect a forked repository
       #   if: ${{ github.repository != env.ORIGIN_REPOSITORY }}
