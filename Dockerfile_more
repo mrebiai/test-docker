@@ -1,6 +1,4 @@
-ARG BASE_IMAGE
-FROM ${BASE_IMAGE}
-ARG BUILD_VERSION="unspecified"
-LABEL org.opencontainers.image.version="${BUILD_VERSION}"
+ARG BASE_IMAGE="test-docker:minimal"
+FROM ${BASE_IMAGE} as more
 
 RUN touch /foo.txt
