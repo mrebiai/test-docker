@@ -1,4 +1,4 @@
 ARG BASE_IMAGE="test-docker:minimal"
-FROM ${BASE_IMAGE} as more
+FROM ${BASE_IMAGE} AS more
 
 RUN touch /foo.txt
