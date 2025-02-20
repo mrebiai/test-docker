@@ -59,6 +59,8 @@ jobs:
         if: ${{ contains(github.ref, 'refs/tags/') && github.repository == env.ORIGIN_REPOSITORY }}
         run: |
           echo "The tag name extracted is: ${{ env.TAG_NAME }}"
+          echo "The version number extracted is: ${{ env.VERSION_NUMBER }}"
+
 
       # TODO when using Dockerhub
       # - name: Detect a forked repository
