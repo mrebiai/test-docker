@@ -49,8 +49,11 @@ jobs:
         if: ${{ contains(github.ref, 'refs/tags/') && github.repository == env.ORIGIN_REPOSITORY }}
         run: |
           TAG=${GITHUB_REF#refs/tags/}
+          VERSION=${TAG#v}
           echo "Tag name is: $TAG"
+          echo "Version is: $VERSION"
           echo "TAG_NAME=$TAG" >> $GITHUB_ENV
+          echo "VERSION_NUMBER=$VERSION" >> $GITHUB_ENV
 
       - name: Use the tag name
         if: ${{ contains(github.ref, 'refs/tags/') && github.repository == env.ORIGIN_REPOSITORY }}
