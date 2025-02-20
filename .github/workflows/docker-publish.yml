@@ -135,8 +135,10 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          output=$(gh release create "${tag}" --title="${tag}" --generate-notes 2>&1) || [[ "${output}" == "release already exists" ]]
-          gh release upload "${tag}" test-docker-${{ env.VERSION_NUMBER }}.jar --clobber
+          if gh release view "${{ env.TAG_NAME }}" > /dev/null 2>&1; then
+            gh release create "${{ env.TAG_NAME }}" --title="${{ env.TAG_NAME }}" --generate-notes
+          fi
+          gh release upload "${{ env.TAG_NAME }}" test-docker-${{ env.VERSION_NUMBER }}.jar --clobber
 
       # - name: Release
       #   id: release
