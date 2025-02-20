@@ -41,6 +41,7 @@ java {
     }
 }
 
+
 application {
     // Define the main class for the application.
     mainClass = "org.example.AppKt"
@@ -49,4 +50,19 @@ application {
 tasks.named<Test>("test") {
     // Use JUnit Platform for unit tests.
     useJUnitPlatform()
+}
+
+tasks {
+    jar {
+        manifest {
+            attributes(
+                mapOf(
+                    "Main-Class" to "org.example.AppKt",
+                    "Implementation-Title" to "test-docker",
+                    "Implementation-Version" to project.version,
+                    "Implementation-Vendor" to "Me"
+                )
+            )
+        }
+    }
 }
