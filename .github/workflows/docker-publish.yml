@@ -126,22 +126,15 @@ jobs:
         id: extract-fat-jar
         run: |
           docker container create --name temp-container test-docker:minimal
-          docker container cp temp-container:/test-docker.jar test-docker.jar
+          docker container cp temp-container:/test-docker.jar test-docker-${{ env.VERSION_NUMBER }}.jar
           docker container rm temp-container
       
-      - name: Upload artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: jar
-          path: test-docker.jar
-
-
       - name: Upload jar in release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           output=$(gh release create "${tag}" --title="${tag}" --generate-notes 2>&1) || [[ "${output}" == "release already exists" ]]
-          gh release upload "${tag}" test-docker.jar --clobber
+          gh release upload "${tag}" test-docker-${{ env.VERSION_NUMBER }}.jar --clobber
 
       # - name: Release
       #   id: release
