@@ -106,71 +106,50 @@ jobs:
             type=semver,pattern={{version}}
             type=ref,event=branch
 
-      # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
-      - name: Build and push Docker image - minimal
-        id: build-and-push-minimal
+      - name: Build Docker image - minimal
+        id: build-minimal
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
         with:
           context: .
           load: true
           file: ./Dockerfile
-          platforms: linux/amd64 
+          tags: test-docker:minimal
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+      # https://github.com/docker/build-push-action
+      - name: Build Docker image - more
+        id: build-more
+        uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
+        with:
+          context: .
+          load: true
+          file: ./Dockerfile
+          tags: test-docker:more
+          labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          build-args: |
+            BASE_IMAGE=test-docker:minimal
+
+      # https://github.com/docker/build-push-action
+      - name: Build and push Docker image - minimal
+        id: build-and-push-minimal
+        if: ${{ env.RELEASE_MODE == 'true' }}
+        uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64,
           #,linux/arm64
-          push: ${{ env.RELEASE_MODE == 'true' }}
+          push: true
           tags: ${{ steps.meta.outputs.tags }}-minimal
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-      
-      - name: Extract fat jar
-        id: extract-fat-jar
-        if: ${{ env.RELEASE_MODE == 'true' }}
-        run: |
-          docker container create --name temp-container ${{ steps.meta.outputs.tags }}-minimal
-          docker container cp temp-container:/test-docker.jar test-docker-${{ env.VERSION_NUMBER }}.jar
-          docker container rm temp-container
-      
-      - name: Upload jar in release
-        if: ${{ env.RELEASE_MODE == 'true' }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: |
-          if gh release view "${{ env.TAG_NAME }}" > /dev/null 2>&1; then
-            echo "Release ${{ env.TAG_NAME }} already exists"
-          else
-            echo "Release ${{ env.TAG_NAME }} does not exist"
-            gh release create "${{ env.TAG_NAME }}" --title="${{ env.TAG_NAME }}" --generate-notes
-          fi
-          gh release upload "${{ env.TAG_NAME }}" test-docker-${{ env.VERSION_NUMBER }}.jar --clobber
-      
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
-      # https://github.com/sigstore/cosign
-      - name: Sign the published Docker image - minimal
-        if: ${{ env.RELEASE_MODE == 'true' && github.repository == env.ORIGIN_REPOSITORY }}
-        env:
-          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
-          TAGS: ${{ steps.meta.outputs.tags }}-minimal
-          DIGEST: ${{ steps.build-and-push-minimal.outputs.digest }}
-        # This step uses the identity token to provision an ephemeral certificate
-        # against the sigstore community Fulcio instance.
-        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
 
-      # # Extract metadata (tags, labels) for Docker
-      # # https://github.com/docker/metadata-action
-      # - name: Extract Docker metadata - more
-      #   id: meta-more
-      #   uses: docker/metadata-action@369eb591f429131d6889c46b94e711f089e6ca96 # v5.6.1
-      #   with:
-      #     images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-      #     tags: |
-      #       type=semver,pattern={{version}}
-
-
-      # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image - more
         id: build-and-push-more
@@ -187,11 +166,34 @@ jobs:
           cache-to: type=gha,mode=max
           build-args: |
             BASE_IMAGE=${{ steps.meta.outputs.tags }}-minimal
-            
-      # Sign the resulting Docker image digest except on PRs.
-      # This will only write to the public Rekor transparency log when the Docker
-      # repository is public to avoid leaking data.  If you would like to publish
-      # transparency data even for private images, pass --force to cosign below.
+      
+      - name: Upload jar in release
+        if: ${{ env.RELEASE_MODE == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker container create --name temp-container ${{ steps.meta.outputs.tags }}-minimal
+          docker container cp temp-container:/test-docker.jar test-docker-${{ env.VERSION_NUMBER }}.jar
+          docker container rm temp-container
+          if gh release view "${{ env.TAG_NAME }}" > /dev/null 2>&1; then
+            echo "Release ${{ env.TAG_NAME }} already exists"
+          else
+            echo "Release ${{ env.TAG_NAME }} does not exist"
+            gh release create "${{ env.TAG_NAME }}" --title="${{ env.TAG_NAME }}" --generate-notes
+          fi
+          gh release upload "${{ env.TAG_NAME }}" test-docker-${{ env.VERSION_NUMBER }}.jar --clobber
+      
+      # https://github.com/sigstore/cosign
+      - name: Sign the published Docker image - minimal
+        if: ${{ env.RELEASE_MODE == 'true' && github.repository == env.ORIGIN_REPOSITORY }}
+        env:
+          # https://docs.github.com/en/actions/security-guides/security-hardening-for-github-actions#using-an-intermediate-environment-variable
+          TAGS: ${{ steps.meta.outputs.tags }}-minimal
+          DIGEST: ${{ steps.build-and-push-minimal.outputs.digest }}
+        # This step uses the identity token to provision an ephemeral certificate
+        # against the sigstore community Fulcio instance.
+        run: echo "${TAGS}" | xargs -I {} cosign sign --yes {}@${DIGEST}
+
       # https://github.com/sigstore/cosign
       - name: Sign the published Docker image - more
         if: ${{ env.RELEASE_MODE == 'true' && github.repository == env.ORIGIN_REPOSITORY }}
