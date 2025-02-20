@@ -124,12 +124,14 @@ jobs:
 
       - name: Extract fat jar
         id: extract-fat-jar
+        if: ${{ contains(github.ref, 'refs/tags/') }}
         run: |
           docker container create --name temp-container test-docker:minimal
           docker container cp temp-container:/test-docker.jar test-docker-${{ env.VERSION_NUMBER }}.jar
           docker container rm temp-container
       
       - name: Upload jar in release
+        if: ${{ contains(github.ref, 'refs/tags/') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
