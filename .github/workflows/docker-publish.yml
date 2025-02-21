@@ -151,7 +151,7 @@ jobs:
           context: .
           load: true
           file: ./Dockerfile
-          platforms: linux/amd64,linux/arm64
+          #platforms: linux/amd64,linux/arm64
           push: ${{ env.RELEASE_MODE == 'true' }}
           tags: ${{ steps.meta-minimal.outputs.tags }}
           labels: ${{ steps.meta-minimal.outputs.labels }}
@@ -166,7 +166,7 @@ jobs:
           context: .
           load: true
           file: ./Dockerfile_more
-          platforms: linux/amd64,linux/arm64
+          #platforms: linux/amd64,linux/arm64
           push: ${{ env.RELEASE_MODE == 'true' }}
           tags: ${{ steps.meta-more.outputs.tags }}
           labels: ${{ steps.meta-more.outputs.labels }}
