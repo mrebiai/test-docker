@@ -9,6 +9,8 @@ services:
     build: 
       context: .
       dockerfile: Dockerfile_more
+      args:
+        - BASE_IMAGE=test-docker:minimal
       tags:
         - test-docker:more
     depends_on: 
