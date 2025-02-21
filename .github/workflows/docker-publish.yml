@@ -119,6 +119,15 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+      - name: Extract fat jar
+        if: ${{ env.RELEASE_MODE == 'true' }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          docker container create --name temp-container test-docker:minimal
+          docker container cp temp-container:/test-docker.jar test-docker-${{ env.VERSION_NUMBER }}.jar
+          docker container rm temp-container
+
       # https://github.com/docker/build-push-action
       - name: Build Docker image - more
         id: build-more
@@ -173,9 +182,6 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          docker container create --name temp-container ${{ steps.meta.outputs.tags }}-minimal
-          docker container cp temp-container:/test-docker.jar test-docker-${{ env.VERSION_NUMBER }}.jar
-          docker container rm temp-container
           if gh release view "${{ env.TAG_NAME }}" > /dev/null 2>&1; then
             echo "Release ${{ env.TAG_NAME }} already exists"
           else
