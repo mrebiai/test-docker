@@ -32,8 +32,14 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
+
+    services:
+      registry:
+        image: registry:2
+        ports:
+          - 5000:5000
+
     permissions:
       contents: write
       packages: write
@@ -62,7 +68,7 @@ jobs:
       - name: Env var - No release
         if: ${{ env.RELEASE_MODE != 'true' }}
         run: |
-          echo "REGISTRY=local" >> $GITHUB_ENV
+          echo "REGISTRY=localhost:5000" >> $GITHUB_ENV
           echo "IMAGE_NAME=test-docker" >> $GITHUB_ENV
 
 
@@ -142,8 +148,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           #,linux/arm64
-          load: ${{ env.RELEASE_MODE != 'true' }} 
-          push: ${{ env.RELEASE_MODE == 'true' }}
+          push: true
           tags: ${{ steps.meta-minimal.outputs.tags }}
           labels: ${{ steps.meta-minimal.outputs.labels }}
           cache-to: type=local,dest=${{ runner.temp }}/.buildx-cache,mode=max
@@ -157,8 +162,7 @@ jobs:
           file: ./Dockerfile_more
           platforms: linux/amd64
           #,linux/arm64
-          load: ${{ env.RELEASE_MODE != 'true' }} 
-          push: ${{ env.RELEASE_MODE == 'true' }}
+          push: true
           tags: ${{ steps.meta-more.outputs.tags }}
           labels: ${{ steps.meta-more.outputs.labels }}
           build-args: |
