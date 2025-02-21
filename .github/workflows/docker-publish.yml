@@ -102,7 +102,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=semver,pattern={{version}},suffix=minimal
+            type=raw,value=latest,enable=false
+            type=semver,pattern={{version}},suffix=-minimal
             type=ref,event=branch
 
       # https://github.com/docker/metadata-action
@@ -112,7 +113,8 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            type=semver,pattern={{version}},suffix=more
+            type=raw,value=latest,enable=false
+            type=semver,pattern={{version}},suffix=-more
             type=ref,event=branch
 
       # https://github.com/docker/build-push-action
@@ -144,13 +146,11 @@ jobs:
         with:
           context: .
           load: true
-          file: ./Dockerfile
+          file: ./Dockerfile_more
           tags: test-docker:more
           labels: ${{ steps.meta-more.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
-          build-args: |
-            BASE_IMAGE=test-docker:minimal
 
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image - minimal
@@ -159,8 +159,9 @@ jobs:
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
         with:
           context: .
+          load: true
           file: ./Dockerfile
-          platforms: linux/amd64,
+          platforms: linux/amd64
           #,linux/arm64
           push: true
           tags: ${{ steps.meta-minimal.outputs.tags }}
@@ -175,6 +176,7 @@ jobs:
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
         with:
           context: .
+          load: true
           file: ./Dockerfile_more
           platforms: linux/amd64 
           #,linux/arm64
