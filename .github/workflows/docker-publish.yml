@@ -21,9 +21,9 @@ env:
   # IMAGE_NAME: ${{ secrets.DOCKERHUB_USERNAME }}/karate-data
   # # Tests
   # TEST_FULL_IMAGE_NAME: local/karate-data:test
-  
+  RELEASE_MODE: false
+
   # TODO remove
-  REGISTRY: ghcr.io
   # github.repository as <account>/<repo>
   IMAGE_NAME: ${{ github.repository }}
   REGISTRY_USERNAME: ${{ github.actor }}
@@ -47,7 +47,7 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Extract tag name
+      - name: Env var - Release
         if: ${{ contains(github.ref, 'refs/tags/') }}
         run: |
           TAG=${GITHUB_REF#refs/tags/}
@@ -57,6 +57,12 @@ jobs:
           echo "TAG_NAME=$TAG" >> $GITHUB_ENV
           echo "VERSION_NUMBER=$VERSION" >> $GITHUB_ENV
           echo "RELEASE_MODE=true" >> $GITHUB_ENV
+          echo "REGISTRY=ghcr.io" >> $GITHUB_ENV
+
+      - name: Env var - No release
+        if: ${{ env.RELEASE_MODE == 'true' }}
+        run: |
+          echo "REGISTRY=local" >> $GITHUB_ENV
 
 
       # TODO when using Dockerhub
@@ -150,6 +156,7 @@ jobs:
           file: ./Dockerfile_more
           platforms: linux/amd64
           #,linux/arm64
+          load: ${{ env.RELEASE_MODE != 'true' }} 
           push: ${{ env.RELEASE_MODE == 'true' }}
           tags: ${{ steps.meta-more.outputs.tags }}
           labels: ${{ steps.meta-more.outputs.labels }}
