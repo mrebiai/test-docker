@@ -60,7 +60,7 @@ jobs:
           echo "REGISTRY=ghcr.io" >> $GITHUB_ENV
 
       - name: Env var - No release
-        if: ${{ env.RELEASE_MODE == 'true' }}
+        if: ${{ env.RELEASE_MODE != 'true' }}
         run: |
           echo "REGISTRY=local" >> $GITHUB_ENV
 
