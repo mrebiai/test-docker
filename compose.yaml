@@ -1,10 +1,20 @@
 services:
+  builder:
+    build:
+      context: .
+      dockerfile: Dockerfile_builder
+      tags:
+        - test-docker:builder
   minimal:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        - BUILDER_IMAGE=test-docker:builder
       tags:
         - test-docker:minimal
+    depends_on: 
+      - builder
   more:
     build: 
       context: .

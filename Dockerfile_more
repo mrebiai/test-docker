@@ -1,3 +1,4 @@
+
 ARG BASE_IMAGE="test-docker:minimal"
 FROM ${BASE_IMAGE} AS more
 
