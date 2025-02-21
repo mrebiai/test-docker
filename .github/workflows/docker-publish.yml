@@ -63,6 +63,7 @@ jobs:
         if: ${{ env.RELEASE_MODE != 'true' }}
         run: |
           echo "REGISTRY=local" >> $GITHUB_ENV
+          echo "IMAGE_NAME=test-docker" >> $GITHUB_ENV
 
 
       # TODO when using Dockerhub
