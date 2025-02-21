@@ -135,6 +135,7 @@ jobs:
           file: ./Dockerfile
           platforms: linux/amd64
           #,linux/arm64
+          load: ${{ env.RELEASE_MODE != 'true' }} 
           push: ${{ env.RELEASE_MODE == 'true' }}
           tags: ${{ steps.meta-minimal.outputs.tags }}
           labels: ${{ steps.meta-minimal.outputs.labels }}
@@ -146,7 +147,6 @@ jobs:
         uses: docker/build-push-action@ca877d9245402d1537745e0e356eab47c3520991 # v6.13.0
         with:
           context: .
-          load: ${{ env.RELEASE_MODE != 'true' }} 
           file: ./Dockerfile_more
           platforms: linux/amd64
           #,linux/arm64
