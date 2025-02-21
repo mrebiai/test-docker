@@ -121,7 +121,7 @@ jobs:
 
       # https://github.com/docker/login-action
       - name: Log into registry ${{ env.REGISTRY }}
-        #if: ${{ env.RELEASE_MODE == 'true' }}
+        if: ${{ env.RELEASE_MODE == 'true' }}
         uses: docker/login-action@9780b0c442fbb1117ed29e0efdff1e18412f7567 # v3.3.0
         with:
           registry: ${{ env.REGISTRY }}
