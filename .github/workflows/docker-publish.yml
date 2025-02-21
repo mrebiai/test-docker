@@ -129,8 +129,8 @@ jobs:
           file: ./Dockerfile
           tags: test-docker:minimal
           labels: ${{ steps.meta-minimal.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
       - name: Extract fat jar
         if: ${{ env.RELEASE_MODE == 'true' }}
@@ -151,8 +151,8 @@ jobs:
           file: ./Dockerfile_more
           tags: test-docker:more
           labels: ${{ steps.meta-more.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image - minimal
@@ -168,8 +168,8 @@ jobs:
           push: true
           tags: ${{ steps.meta-minimal.outputs.tags }}
           labels: ${{ steps.meta-minimal.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
 
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image - more
@@ -185,10 +185,9 @@ jobs:
           push: ${{ env.RELEASE_MODE == 'true' }}
           tags: ${{ steps.meta-more.outputs.tags }}
           labels: ${{ steps.meta-more.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          build-args: |
-            BASE_IMAGE=test-docker:minimal
+          # cache-from: type=gha
+          # cache-to: type=gha,mode=max
+          
       
       - name: Upload jar in release
         if: ${{ env.RELEASE_MODE == 'true' }}
