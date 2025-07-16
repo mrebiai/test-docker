@@ -13,14 +13,12 @@
   "schedule": [
     "* 0-3 * * *"
   ],
-  "dependencyDashboardAutoclose": true,
-  "automerge": true,
   "packageRules": [
     {
       "description": "Automerge non-major updates",
       "matchUpdateTypes": ["minor", "patch", "pin", "digest"],
       "automerge": true,
-      "automergeType": "branch"
+      "automergeType": "pr"
     }
   ]
 }
